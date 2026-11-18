@@ -1,5 +1,6 @@
 module Pages.Home exposing (view)
 
+import Types exposing (Model, Msg(..))
 import Components.Footer
 import Components.Navbar
 import Components.ProjectRow
@@ -10,19 +11,21 @@ import Pages.About exposing (about)
 import Html exposing (h1, p)
 
 
-view : () -> Html msg
-view _ =
+-- view : Model -> Html msg
+view : Model -> Html Msg
+view model =
     div [ class "site-shell" ]
         [ Components.Navbar.view
         , main_ [ class "main-content", id "top" ]
             [ aboutSection
-            , projectsSection
+            , projectsSection model
             ]
         , Components.Footer.view
         ]
 
 
-aboutSection : Html msg
+-- aboutSection : Html msg
+aboutSection : Html Msg
 aboutSection =
     section [ class "intro" ]
         [ h1 [] [ text about.name ]
@@ -38,10 +41,27 @@ aboutSection =
         ]
 
 
-projectsSection : Html msg
-projectsSection =
+-- projectsSection : Html msg
+-- projectsSection =
+--     section [ class "projects-section", id "projects" ]
+--         [ h2 [ class "section-heading" ] [ text "Projects" ]
+--         , div [ class "project-list" ]
+--             (List.map Components.ProjectRow.view projects)
+--         ]
+
+
+projectsSection : Model -> Html Msg
+projectsSection model =
     section [ class "projects-section", id "projects" ]
         [ h2 [ class "section-heading" ] [ text "Projects" ]
         , div [ class "project-list" ]
-            (List.map Components.ProjectRow.view projects)
+            (List.map
+                (\project ->
+                    Components.ProjectRow.view
+                        ToggleProject
+                        (model.expandedProject == Just project.title)
+                        project
+                )
+                projects
+            )
         ]

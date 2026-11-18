@@ -14,8 +14,7 @@ build:
 	@npx esbuild $(OUTPUT_JS) --minify --outfile=$(OUTPUT_JS) --allow-overwrite
 
 serve:
-	@cmd /c "start http://127.0.0.1:$(LOCALPORT)"
-	@python -m http.server --directory $(PUBLICDIR) $(LOCALPORT)
+	@npx http-server -o -p $(LOCALPORT) $(PUBLICDIR)
 
 open:
 	@cmd /c "start $(MAIN_HTML)"
