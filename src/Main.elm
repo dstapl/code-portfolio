@@ -1,4 +1,4 @@
-module Main exposing (main)
+port module Main exposing (main)
 
 import Browser
 import Html exposing (Html)
@@ -20,6 +20,8 @@ main =
         }
 
 
+port renderLatex : () -> Cmd msg
+
 
 -- Fetch json for each project
 
@@ -40,43 +42,48 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ToggleProject title ->
-            let
-                isExpanding =
-                    model.expandedProject /= Just title
+                    let
+                        isExpanding =
+                            model.expandedProject /= Just title
 
-                maybeProject =
-                    List.head (List.filter (\p -> p.title == title) model.projects)
+                        maybeProject =
+                            List.head (List.filter (\p -> p.title == title) model.projects)
 
-                -- Check if we need to fetch and have a repo name to use
-                cmd =
-                    case maybeProject of
-                        Just p ->
-                            case ( isExpanding && p.longDescription == Nothing, p.repo ) of
-                                ( True, Just repoName ) ->
-                                    Http.get
-                                        { url = "projects/" ++ String.toLower repoName ++ ".md"
-                                        , expect = Http.expectString (GotLongDescription title)
-                                        }
+                        cmd =
+                            case maybeProject of
+                                Just p ->
+                                    if isExpanding then
+                                        case (p.longDescription, p.repo) of
+                                            (Nothing, Just repoName) ->
+                                                -- First time opening: fetch the markdown
+                                                Http.get
+                                                    { url = "projects/" ++ String.toLower repoName ++ ".md"
+                                                    , expect = Http.expectString (GotLongDescription title)
+                                                    }
 
-                                _ ->
+                                            _ ->
+                                                -- Already cached: trigger latex render immediately
+                                                renderLatex ()
+                                    else
+                                        Cmd.none
+
+                                Nothing ->
                                     Cmd.none
+                    in
+                    ( { model
+                        | expandedProject =
+                            if model.expandedProject == Just title then
+                                Nothing
 
-                        Nothing ->
-                            Cmd.none
-            in
-            ( { model
-                | expandedProject =
-                    if model.expandedProject == Just title then
-                        Nothing
-
-                    else
-                        Just title
-              }
-            , cmd
-            )
+                            else
+                                Just title
+                      }
+                    , cmd
+                    )
 
         GotProjects (Ok projects) ->
             ( { model | projects = projects }, Cmd.none )
+            -- ( { model | projects = projects }, renderLatex() )
 
         GotProjects (Err _) ->
             ( model, Cmd.none )
@@ -95,7 +102,7 @@ update msg model =
                         )
                         model.projects
             in
-            ( { model | projects = updatedProjects }, Cmd.none )
+            ( { model | projects = updatedProjects }, renderLatex () )
 
         GotLongDescription _ (Err _) ->
             ( model, Cmd.none )

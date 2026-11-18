@@ -11,8 +11,8 @@ LOCALPORT:=8080
 
 
 build:
-	@elm make $(MAIN_ELM) --output=$(OUTPUT_JS)
-	# @elm make $(MAIN_ELM) --optimize --output=$(OUTPUT_JS)
+	# @elm make $(MAIN_ELM) --output=$(OUTPUT_JS)
+	@elm make $(MAIN_ELM) --optimize --output=$(OUTPUT_JS)
 	@npx esbuild $(OUTPUT_JS) --minify --outfile=$(OUTPUT_JS) --allow-overwrite
 
 format:

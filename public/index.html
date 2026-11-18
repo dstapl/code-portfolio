@@ -10,14 +10,57 @@
     <title>Daniel Stapleton</title>
 
     <link rel="stylesheet" href="styles.css">
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.19.1/dist/katex.min.css"
+        crossorigin="anonymous"
+    >
+
+    <script
+        defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.19.1/dist/katex.min.js"
+        crossorigin="anonymous"
+    ></script>
+
+    <script
+        defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.19.1/dist/contrib/auto-render.min.js"
+        crossorigin="anonymous"
+    ></script>
+
+    <script>
+		window.renderLatex = function () {
+			document.querySelectorAll("latex-content").forEach(el => {
+				if (el.dataset.rendered) return;
+
+				renderMathInElement(el, {
+					delimiters: [
+						{ left: "$$", right: "$$", display: true },
+						{ left: "$", right: "$", display: false },
+						{ left: "\\[", right: "\\]", display: true },
+						{ left: "\\(", right: "\\)", display: false }
+					],
+					throwOnError: false
+				});
+
+				el.dataset.rendered = "true";
+			});
+		};
+    </script>
 </head>
+
 <body>
-    <div id="app"></div>
+    <div id="elm-node"></div>
 
     <script src="main.js"></script>
     <script>
-        Elm.Main.init({
-            node: document.getElementById("app")
+        const app = Elm.Main.init({
+            node: document.getElementById("elm-node")
+        });
+
+        app.ports.renderLatex.subscribe(() => {
+            requestAnimationFrame(() => window.renderLatex());
         });
     </script>
 </body>
