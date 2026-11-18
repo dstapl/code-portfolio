@@ -36,10 +36,15 @@
 
 module Components.ProjectRow exposing (view)
 
-import Pages.Projects exposing (Project)
 import Html exposing (Html, a, button, div, h3, p, span, text)
-import Html.Attributes exposing (class, href, rel, target, type_, attribute)
+import Html.Attributes exposing (attribute, class, href, rel, target, type_)
 import Html.Events exposing (onClick)
+import Pages.Projects exposing (Project)
+
+
+githubRepo : String -> Maybe String
+githubRepo name =
+    Just ("https://github.com/dstapl/" ++ name)
 
 
 view : (String -> msg) -> Bool -> Project -> Html msg
@@ -48,6 +53,7 @@ view toggle expanded project =
         [ class
             (if expanded then
                 "project-row expanded"
+
              else
                 "project-row"
             )
@@ -57,14 +63,20 @@ view toggle expanded project =
             , type_ "button"
             , onClick (toggle project.title)
             , attribute "aria-expanded"
-                (if expanded then "true" else "false")
+                (if expanded then
+                    "true"
+
+                 else
+                    "false"
+                )
             ]
             [ div [ class "project-heading" ]
                 [ div [ class "project-title-group" ]
                     [ h3 [] [ text project.title ]
                     ]
                 , span [ class "project-language" ]
-                    [ text project.language ]
+                    -- [ text project.language ]
+                    [ text (String.join " · " project.language) ]
                 ]
             , div [ class "project-meta" ]
                 [ text project.context ]
@@ -76,7 +88,6 @@ view toggle expanded project =
                 Nothing ->
                     text ""
             ]
-
         , if expanded then
             div [ class "project-details" ]
                 [ case project.longDescription of
@@ -86,7 +97,7 @@ view toggle expanded project =
 
                     Nothing ->
                         text ""
-                , case project.source of
+                , case project.repo |> Maybe.andThen githubRepo of
                     Just url ->
                         a
                             [ class "project-source"

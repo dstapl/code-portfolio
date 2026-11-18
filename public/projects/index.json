@@ -1,0 +1,31 @@
+[
+	{
+		"title": "Direct N-body Simulator",
+		"language": ["Fortran"],
+		"shortDescription": "A gravitational direct N-body simulator, constrained to CPU processing.\nTaking advantage of SIMD, OpenMP multi-threading, and algorithmic optimisations, to improve performance.",
+		"longDescription": "This is a test",
+		"context": "MSc Astrophysics Dissertation",
+		"repo": "NBODY"
+	},
+	{
+		"title": "CV Classification",
+		"language": ["Python", "R"],
+		"shortDescription": "Astronomical photometry and the detection of superhump periodicities in Cataclysmic Variable stars.",
+		"context": "BSc Research Project",
+		"repo": "CV-Classification"
+	},
+	{
+		"title": "SIMBAD Object Finder",
+		"language": ["Julia"],
+		"shortDescription": "An interactive astronomical object filtering tool built using Pluto.jl. Built to aid first-year telescope observations.",
+		"context": "Personal Project",
+		"repo": "SIMBAD-object-finder"
+	},
+	{
+		"title": "Neovim Configuration",
+		"language": ["Lua"],
+		"shortDescription": null,
+		"context": "Config files",
+		"repo": "nvimrc"
+	}
+]
